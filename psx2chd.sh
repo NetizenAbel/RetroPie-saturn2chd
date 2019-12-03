@@ -10,7 +10,8 @@
 # License: MIT https://github.com/kashaiahyah85/RetroPie-psx2chd/blob/master/LICENSE)
 #
 # Requirements:
-# - mame-tools
+# - RetroPie, any version.
+# - mame-tools)
 
 # Globals
 # If the script is called via sudo, detect the user who called it and the homedir.
@@ -20,18 +21,21 @@ user="$SUDO_USER"
 home="$(eval echo ~$user)"
 
 # Variables
-readonly ROMS_DIR="$home/RetroPie/roms/psx"
-readonly SCRIPT_VERSION="0.1.0" # https://semver.org/
+readonly RP_DIR="$home/RetroPie"
+readonly RP_CONFIG_DIR="/opt/retropie/configs"
+readonly SCRIPT_VERSION="0.1.1" # https://semver.org/
 readonly SCRIPT_DIR="$(cd "$(dirname $0)" && pwd)"
 readonly SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_FULL="$SCRIPT_DIR/$SCRIPT_NAME"
 readonly SCRIPT_TITLE="PSX2CHD"
 readonly SCRIPT_DESCRIPTION="A tool for compressing PSX games into CHD format."
-readonly DEPENDENCIES="mame-tools"
+readonly ROMS_DIR="$RP_DIR/roms/psx"
+readonly CHD_SCRIPT=$ROMS_DIR/chdscript.sh
 readonly GIT_REPO_URL="https://github.com/kashaiahyah85/RetroPie-psx2chd"
 readonly GIT_SCRIPT_URL="https://github.com/kashaiahyah85/RetroPie-psx2chd/blob/master/psx2chd.sh"
 
 # Dialogs
-BACKTITLE="$SCRIPT_TITLE: $SCRIPT_DESCRIPTION"
+BACKTITLE="$SCRIPT_DESCRIPTION"
 
 # dialogMenu example of usage:
 #options=( tag1 option1 tag2 option2 N optionN )
@@ -75,7 +79,7 @@ function is_sudo() {
 }
 
 # Take care of deps
-function check_deps() {
+function checkDeps() {
 	echo "Checking for dependencies..."
 	if [[ "$OSTYPE" == "darwin"* ]]
 	then
@@ -92,20 +96,55 @@ function check_deps() {
 	fi
 }
 
-function main() {
-    echo "" > ROMLIST.tmp
-    for PSX_ROM in "$ROMS_DIR/*.cue"
-    do
-    dialogYesNo "About to compress: $PSX_ROM\nDo you want to continue?"
-    dialogInfo "Please wait. Compressing $PSX_ROM..."
-
-    # The output files are named this way as a sort of temp file, and
-    # are renamed appropriately in a later step.
-    chdman createcd -i "$PSX_ROM" -o "$PSX_ROM.chd"
-    done
-
-
+function cleanUp() {
+    rm -f "$CHD_SCRIPT"
+    clear
 }
 
-check_deps
+function fixNames() {
+    cd $ROMS_DIR
+    for OLD_NAME in "*\(Disc\ [0-9]\).chd"
+    do
+        dialogInfo "Fixing filenames for multi-disc games,\nPlease wait..."
+        NEW_NAME="${OLD_NAME/\ \(Disc\ /.cd}"
+        NEW_NAME="${NEW_NAME/\).chd/}"
+        mv "$OLD_NAME" "${NEW_NAME}"
+    done
+}
+
+function generateM3U() {
+    cd $ROMS_DIR
+    for ROM in *.cd[0-9]
+    do
+        dialogInfo "Generating M3U for multi-disc game:\n\n$(basename -- \"$ROM\" | grep cd[0-9])"
+        ls -1v | grep $ROM.cd[0-9] >> $(basename -- "$ROM").m3u
+    done
+}
+
+function compressRoms() {
+    dialogMsg "This tool will compress any bin/cue psx roms."
+    cd $ROMS_DIR
+    for ROM in *.cue
+    do
+        FILE_IN=$(basename -- "$ROM" | grep .cue)
+        FILE_OUT="${FILE_IN%.*}.chd"
+        BAK_FILE="${FILE_IN%.*}.cuebak"
+         cd $ROMS_DIR
+         echo chdman createcd -i \"$FILE_IN\" -o \"$FILE_OUT\" > $CHD_SCRIPT
+         dialogInfo "Found \"${FILE_IN%.*}\"\n\n $(sh $CHD_SCRIPT | grep \%)"
+         dialogInfo "Found \"${FILE_IN%.*}\"\n\n Complete."
+         cleanUp
+    done
+}
+
+function main() {
+    checkDeps
+    cleanUp
+    compressRoms
+    #fixNames
+    #generateM3U
+    #cleanUp
+}
+
 main
+exit 0
