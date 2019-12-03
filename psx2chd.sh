@@ -109,8 +109,14 @@ function fixNames() {
         dialogInfo "Fixing filenames for multi-disc games,\nPlease wait..."
         NEW_NAME="${OLD_NAME/\ \(Disc\ /.CD}"
         NEW_NAME="${NEW_NAME/\).chd/}"
+	M3U_NAME="${NEW_NAME/CD[0-9]/m3u}"
         mv "$OLD_NAME" "${NEW_NAME}"
-	echo "${NEW_NAME}" >> "${NEW_NAME/CD[0-9]/m3u}"
+	rm -f "$M3U_NAME"
+    done
+    for DISC in *CD[0-9]
+    do
+	dialogInfo "Creating M3U files for multi-disc games."
+	echo "${DISC}" >> "${DISC/CD[0-9]/m3u}"
     done
 }
 
