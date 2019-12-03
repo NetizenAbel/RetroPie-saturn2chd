@@ -109,7 +109,7 @@ function fixNames() {
         dialogInfo "Fixing filenames for multi-disc games,\nPlease wait..."
         NEW_NAME="${OLD_NAME/\ \(Disc\ /.CD}"
         NEW_NAME="${NEW_NAME/\).chd/}"
-	M3U_FIlE="$(basename ${NEW_NAME}).m3u"
+	M3U_FIlE="${NEW_NAME/\).m3u/}"
 	echo $NEW_NAME >> $M3U_FILE
         mv "$OLD_NAME" "${NEW_NAME}"
     done
