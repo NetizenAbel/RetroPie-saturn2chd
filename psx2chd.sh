@@ -109,10 +109,16 @@ function fixNames() {
         dialogInfo "Fixing filenames for multi-disc games,\nPlease wait..."
         NEW_NAME="${OLD_NAME/\ \(Disc\ /.CD}"
         NEW_NAME="${NEW_NAME/\).chd/}"
-	M3U_FIlE="${NEW_NAME/\).m3u/}"
-	echo $NEW_NAME >> $M3U_FILE
         mv "$OLD_NAME" "${NEW_NAME}"
     done
+    find . -type d |
+	    while read
+	    do
+		    for GAME in *.CD[0-9]
+		    do
+			    echo "${GAME##*/}" >> ./"$(basename {GAME}).m3u"
+		    done
+	    done
 }
 
 function compressRoms() {
