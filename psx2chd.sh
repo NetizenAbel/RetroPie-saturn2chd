@@ -103,7 +103,7 @@ function cleanUp() {
 
 function fixNames() {
     cd $ROMS_DIR
-    for OLD_NAME in "*\(Disc\ [0-9]\).chd"
+    for OLD_NAME in *\(Disc\ [0-9]\).chd
     do
         dialogInfo "Fixing filenames for multi-disc games,\nPlease wait..."
         NEW_NAME="${OLD_NAME/\ \(Disc\ /.CD}"
