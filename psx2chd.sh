@@ -106,7 +106,7 @@ function fixNames() {
     for OLD_NAME in "*\(Disc\ [0-9]\).chd"
     do
         dialogInfo "Fixing filenames for multi-disc games,\nPlease wait..."
-        NEW_NAME="${OLD_NAME/\ \(Disc\ /.cd}"
+        NEW_NAME="${OLD_NAME/\ \(Disc\ /.CD}"
         NEW_NAME="${NEW_NAME/\).chd/}"
         mv "$OLD_NAME" "${NEW_NAME}"
     done
@@ -114,7 +114,7 @@ function fixNames() {
 
 function generateM3U() {
     cd $ROMS_DIR
-    for ROM in *.cd[0-9]
+    for ROM in *.CD[0-9]
     do
         dialogInfo "Generating M3U for multi-disc game:\n\n$(basename -- \"$ROM\" | grep cd[0-9])"
         ls -1v | grep $ROM.cd[0-9] >> $(basename -- "$ROM").m3u
@@ -141,7 +141,7 @@ function main() {
     checkDeps
     cleanUp
     compressRoms
-    #fixNames
+    fixNames
     #generateM3U
     #cleanUp
 }
