@@ -116,7 +116,7 @@ function generateM3U() {
     cd $ROMS_DIR
     for ROM in *.CD[0-9]
     do
-        dialogInfo "Generating M3U for multi-disc game:\n\n$(basename -- \"$ROM\" | grep cd[0-9])"
+        dialogInfo "Generating M3U for multi-disc game:\n\n$(basename -- \"$ROM\" | grep CD[0-9])"
         ls -1v | grep $ROM.CD[0-9] >> $(basename -- "$ROM").m3u
     done
 }
