@@ -109,7 +109,7 @@ function fixNames() {
         dialogInfo "Fixing filenames for multi-disc games,\nPlease wait..."
         NEW_NAME="${OLD_NAME/\ \(Disc\ /.CD}"
         NEW_NAME="${NEW_NAME/\).chd/}"
-	echo $NEW_NAME >> $(basename -- "$ROM").m3u
+	echo $NEW_NAME >> $(basename -- "$NEW_NAME").m3u
         mv "$OLD_NAME" "${NEW_NAME}"
     done
 }
