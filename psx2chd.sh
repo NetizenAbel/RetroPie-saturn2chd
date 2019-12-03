@@ -110,7 +110,7 @@ function fixNames() {
         NEW_NAME="${OLD_NAME/\ \(Disc\ /.CD}"
         NEW_NAME="${NEW_NAME/\).chd/}"
         mv "$OLD_NAME" "${NEW_NAME}"
-	echo "{NEW_NAME}" >> "${NEW_NAME/CD[0-9]/m3u}"
+	echo "${NEW_NAME}" >> "${NEW_NAME/CD[0-9]/m3u}"
     done
 }
 
