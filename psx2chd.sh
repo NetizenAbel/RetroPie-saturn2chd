@@ -77,10 +77,7 @@ function is_sudo() {
 # Take care of deps
 function check_deps() {
 	echo "Checking for dependencies..."
-	if [[ "$OSTYPE" == "linux-gnu" ]]
-	then
-		sudo apt-get install -y dialog mame-tools
-	elif [[ "$OSTYPE" == "darwin"* ]]
+	if [[ "$OSTYPE" == "darwin"* ]]
 	then
 		brew install --verbose dialog mame-tools
 		if [[ $(brew list | grep mame-tools) == "mame-tools" ]]
@@ -91,8 +88,7 @@ function check_deps() {
 			exit 1
 		fi
 	else
-		echo "What even is this machine?"
-		exit 1
+		sudo apt-get install -y dialog mame-tools
 	fi
 }
 
