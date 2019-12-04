@@ -131,7 +131,8 @@ function compressRoms() {
         FILE_OUT="${FILE_IN%.*}.chd"
          cd "$ROMS_DIR" || exit
          echo chdman createcd -i \""$FILE_IN"\" -o \""$FILE_OUT"\" > "$CHD_SCRIPT"
-	 sh $CHD_SCRIPT | dialog --progressbox "Compressing \"${FILE_IN%.*}\"" 20 70 "$@"
+	 sh $CHD_SCRIPT 2>&1 | sed 's/% complete...//' | \ 
+		 dialog --progressbox "Compressing \"${FILE_IN%.*}\"" 20 70 "$@"
 		#| grep \\% \# | sed 's/Compressing, //' \
 		# | sed 's/% complete...//' \
 		# | sed s/\(ratio=[0-9][0-9]'.'[0-9]'%)'// \
