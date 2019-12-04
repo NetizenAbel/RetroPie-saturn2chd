@@ -137,7 +137,6 @@ function compressRoms() {
 		 | sed s/\(ratio=[0-9][0-9]'.'[0-9]'%)'// \
 		 | dialog --progressbox "Compressing \"${FILE_IN%.*}\"" 20 70\
 		# 2>&1 | dialog --gauge "Compressing \"${FILE_IN%.*}\"" 20 70\
-		 || rm -f "${FILE_IN%.*}.bin" "${FILE_IN%.*}.cue"
 #         dialogInfo "Found \"${FILE_IN%.*}\"\n\n $(sh "$CHD_SCRIPT" | grep \\%)"
 #         dialogInfo "Found \"${FILE_IN%.*}\"\n\n Complete."
          cleanUp
