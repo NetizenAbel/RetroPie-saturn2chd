@@ -18,21 +18,13 @@
 user="$SUDO_USER"
 [[ -z "$user" ]] && user="$(id -un)"
 
-home="$(eval echo ~$user)"
+home="$(eval echo ~"$user")"
 
 # Variables
-readonly RP_DIR="$home/RetroPie"
-readonly RP_CONFIG_DIR="/opt/retropie/configs"
-readonly SCRIPT_VERSION="0.1.1" # https://semver.org/
-readonly SCRIPT_DIR="$(cd "$(dirname $0)" && pwd)"
-readonly SCRIPT_NAME="$(basename "$0")"
-readonly SCRIPT_FULL="$SCRIPT_DIR/$SCRIPT_NAME"
-readonly SCRIPT_TITLE="PSX2CHD"
+readonly RP_DIR="$home/RetroPie"\\
 readonly SCRIPT_DESCRIPTION="A tool for compressing PSX games into CHD format."
 readonly ROMS_DIR="$RP_DIR/roms/psx"
 readonly CHD_SCRIPT=$ROMS_DIR/chdscript.sh
-readonly GIT_REPO_URL="https://github.com/kashaiahyah85/RetroPie-psx2chd"
-readonly GIT_SCRIPT_URL="https://github.com/kashaiahyah85/RetroPie-psx2chd/blob/master/psx2chd.sh"
 
 # Dialogs
 BACKTITLE="$SCRIPT_DESCRIPTION"
@@ -102,7 +94,7 @@ function cleanUp() {
 }
 
 function fixNames() {
-    cd $ROMS_DIR
+    cd "$ROMS_DIR" || exit
     for OLD_NAME in *[0-9]\).chd
     do
         dialogInfo "Fixing filenames for multi-disc games,\nPlease wait..."
@@ -113,38 +105,45 @@ function fixNames() {
     done
 }
 
+function cleanBins() {
+    cd "$ROMS_DIR" || exit
+    for OLD_BIN in *[0-9]\).bin
+    do
+	dialogInfo "Renaming bins for a test."
+	mv "$OLD_BIN" "${OLD_BIN}.bak"
+    done
+}
+
 function buildM3us() {
-    cd $ROMS_DIR
+    cd "$ROMS_DIR" || exit
     for DISC in *.CD[0-9]
     do
-	dialogInfo "Creating M3U files for multi-disc games."
+	dialogInfo "Removing BIN files for converted multi-disc games."
 	echo "${DISC}" >> "${DISC/CD[0-9]/m3u}"
     done
 }
 
 function compressRoms() {
     dialogMsg "This tool will compress any bin/cue psx roms."
-    cd $ROMS_DIR
+    cd "$ROMS_DIR" || exit
     for ROM in *.cue
     do
         FILE_IN=$(basename -- "$ROM" | grep .cue)
-        FILE_BIN=$(basename -- "$ROM" | grep .bin)
         FILE_OUT="${FILE_IN%.*}.chd"
-        BAK_FILE="${FILE_IN%.*}.cuebak"
-         cd $ROMS_DIR
-         echo chdman createcd -i \"$FILE_IN\" -o \"$FILE_OUT\" > $CHD_SCRIPT
-         dialogInfo "Found \"${FILE_IN%.*}\"\n\n $(sh $CHD_SCRIPT | grep \%)"
+         cd "$ROMS_DIR" || exit
+         echo chdman createcd -i \""$FILE_IN"\" -o \""$FILE_OUT"\" > "$CHD_SCRIPT"
+         dialogInfo "Found \"${FILE_IN%.*}\"\n\n $(sh "$CHD_SCRIPT" | grep \\%)"
          dialogInfo "Found \"${FILE_IN%.*}\"\n\n Complete."
          cleanUp
-	 rm -f $FILE_IN
-	 rm -f $FILE_BIN
     done
 }
 
 function main() {
+    cleanUp
     checkDeps
     compressRoms
     fixNames
+    cleanBins
     buildM3us
 }
 
