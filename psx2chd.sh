@@ -94,7 +94,7 @@ function cleanUp() {
 }
 
 function fixNames() {
-    cd "$ROMS_DIR" || exit
+    cd "${ROMS_DIR}" || exit
     for OLD_NAME in *[0-9]\).chd
     do
         dialogInfo "Fixing filenames for multi-disc games,\nPlease wait..."
@@ -106,7 +106,7 @@ function fixNames() {
 }
 
 function cleanBins() {
-    cd "$ROMS_DIR" || exit
+    cd "${ROMS_DIR}" || exit
     for OLD_BIN in *[0-9]\).bin
     do
 	dialogInfo "Renaming bins for a test."
@@ -115,7 +115,7 @@ function cleanBins() {
 }
 
 function buildM3us() {
-    cd "$ROMS_DIR" || exit
+    cd "${ROMS_DIR}" || exit
     for DISC in *.CD[0-9]
     do
 	dialogInfo "Removing BIN files for converted multi-disc games."
@@ -125,7 +125,7 @@ function buildM3us() {
 
 function compressRoms() {
     dialogMsg "This tool will compress any bin/cue psx roms."
-    cd "$ROMS_DIR" || exit
+    cd "${ROMS_DIR}" || exit
     for ROM in *.cue
     do
         FILE_IN=$(basename -- "$ROM" | grep .cue)
