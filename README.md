@@ -21,32 +21,8 @@ git pull
 ## Usage
 
 ```
-./RetroPie-psx2chd.sh [OPTIONS]
+./psx2chd.sh
 ```
-
-If no options are passed, you will be prompted with a usage example:
-
-```
-USAGE: ./RetroPie-psx2chd.sh [OPTIONS]
-
-Use '--help' to see all the options.
-```
-
-## Options
-
-* `--help`: Print the help message and exit.
-* `--version`: Show script version.
-* `--delete`: Delete original .bin and .cue files.
-
-## Examples
-
-### `--help`
-
-Print the help message and exit.
-
-### `--version`
-
-Show script version.
 
 ## Changelog
 
