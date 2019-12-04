@@ -113,7 +113,7 @@ function fixNames() {
     done
 }
 
-funtion buildM3us() {
+function buildM3us() {
     cd $ROMS_DIR
     for DISC in *.CD[0-9]
     do
