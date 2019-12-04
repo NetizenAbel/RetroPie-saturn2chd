@@ -78,7 +78,7 @@ function checkDeps() {
 		brew install --verbose dialog mame-tools
 		if [[ $(brew list | grep mame-tools) == "mame-tools" ]]
 		then
-			echo "Mame-Tools installed, continuing"
+			dialogInfo "Mame-Tools installed, continuing"
 		else
 			echo "Something is wrong with mame-tools."
 			exit 1
@@ -90,7 +90,6 @@ function checkDeps() {
 
 function cleanUp() {
     rm -f "$CHD_SCRIPT"
-    clear
 }
 
 function fixNames() {
@@ -132,8 +131,10 @@ function compressRoms() {
         FILE_OUT="${FILE_IN%.*}.chd"
          cd "$ROMS_DIR" || exit
          echo chdman createcd -i \""$FILE_IN"\" -o \""$FILE_OUT"\" > "$CHD_SCRIPT"
-         dialogInfo "Found \"${FILE_IN%.*}\"\n\n $(sh "$CHD_SCRIPT" | grep \\%)"
-         dialogInfo "Found \"${FILE_IN%.*}\"\n\n Complete."
+	 sh $CHD_SCRIPT | grep \\% 2>&1 | dialog --gauge "Compressing \"${FILE_IN%.*}\"" 20 70\
+		 || rm -f "${FILE_IN%.*}.bin" "${FILE_IN%.*}.cue"
+#         dialogInfo "Found \"${FILE_IN%.*}\"\n\n $(sh "$CHD_SCRIPT" | grep \\%)"
+#         dialogInfo "Found \"${FILE_IN%.*}\"\n\n Complete."
          cleanUp
     done
 }
