@@ -103,7 +103,6 @@ function cleanUp() {
 
 function fixNames() {
     cd $ROMS_DIR
-    rm -f *.m3u
     for OLD_NAME in *[0-9]\).chd
     do
         dialogInfo "Fixing filenames for multi-disc games,\nPlease wait..."
@@ -112,6 +111,10 @@ function fixNames() {
         mv "$OLD_NAME" "${NEW_NAME}"
 	rm -f "${NEW_NAME/.CD[0-9]/m3u}"
     done
+}
+
+funtion buildM3us() {
+    cd $ROMS_DIR
     for DISC in *.CD[0-9]
     do
 	dialogInfo "Creating M3U files for multi-disc games."
@@ -125,6 +128,7 @@ function compressRoms() {
     for ROM in *.cue
     do
         FILE_IN=$(basename -- "$ROM" | grep .cue)
+        FILE_BIN=$(basename -- "$ROM" | grep .bin)
         FILE_OUT="${FILE_IN%.*}.chd"
         BAK_FILE="${FILE_IN%.*}.cuebak"
          cd $ROMS_DIR
@@ -132,6 +136,8 @@ function compressRoms() {
          dialogInfo "Found \"${FILE_IN%.*}\"\n\n $(sh $CHD_SCRIPT | grep \%)"
          dialogInfo "Found \"${FILE_IN%.*}\"\n\n Complete."
          cleanUp
+	 rm -f $FILE_IN
+	 rm -f $FILE_BIN
     done
 }
 
@@ -139,6 +145,7 @@ function main() {
     checkDeps
     compressRoms
     fixNames
+    buildM3us
 }
 
 main
