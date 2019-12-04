@@ -11,7 +11,7 @@
 #
 # Requirements:
 # - RetroPie, any version.
-# - mame-tools)
+# - dialog mame-tools)
 
 # Globals
 # If the script is called via sudo, detect the user who called it and the homedir.
@@ -40,26 +40,26 @@ function dialogMenu() {
         --cancel-label "Back" \
         --ok-label "OK" \
         --menu "$text\n\nChoose an option." 17 75 10 "$@" \
-        2>&1 > /dev/tty
-}
+        > /dev/tty
+} 2>&1 
 
 # dialogYesNo example of usage:
 #dialogYesNo "Do you want to continue?"
 function dialogYesNo() {
-    dialog --no-mouse --backtitle "$BACKTITLE" --yesno "$@" 15 75 2>&1 > /dev/tty
-}
+    dialog --no-mouse --backtitle "$BACKTITLE" --yesno "$@" 15 75 > /dev/tty
+} 2>&1
 
 # dialogMsg example of usage
 #dialogMsg "Failed to install package_name. Try again later."
 function dialogMsg() {
-    dialog --no-mouse --ok-label "OK" --backtitle "$BACKTITLE" --msgbox "$@" 20 70 2>&1 > /dev/tty
-}
+    dialog --no-mouse --ok-label "OK" --backtitle "$BACKTITLE" --msgbox "$@" 20 70 > /dev/tty
+} 2>&1
 
 # dialogInfo example of usage:
 # dialogInfo "Please wait. Compressing $PSX_ROM..."
 function dialogInfo {
-    dialog --infobox "$@" 8 50 2>&1 >/dev/tty
-}
+    dialog --infobox "$@" 8 50 > /dev/tty
+} 2>&1
 
 # end of dialog functions ###################################################
 
