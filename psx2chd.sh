@@ -125,13 +125,14 @@ function buildM3us() {
 function compressRoms() {
     dialogMsg "This tool will compress any bin/cue psx roms."
     cd "${ROMS_DIR}" || exit
+    (
     for ROM in *.cue
     do
         FILE_IN=$(basename -- "$ROM" | grep .cue)
         FILE_OUT="${FILE_IN%.*}.chd"
          cd "$ROMS_DIR" || exit
          echo chdman createcd -i \""$FILE_IN"\" -o \""$FILE_OUT"\" > "$CHD_SCRIPT"
-	 echo $(sh "$CHD_SCRIPT" | grep \\% | sed 's/Compressing, //')
+	 echo $(sh "$CHD_SCRIPT")
 	 #| sed 's/.'[0-9]'% complete... (ratio='[0-9][0-9]'.'[0-9]'%)//'
 	 #| dialog --progressbox "Compressing ${FILE_IN%.*}" 10 80
 		#| grep \\% \# | sed 's/Compressing, //' \
@@ -140,6 +141,7 @@ function compressRoms() {
 #         dialogInfo "Found \"${FILE_IN%.*}\"\n\n Complete."
          cleanUp
     done
+) | dialog --gauge "Compressing ${FILE_IN%.*}" 10 80
 }
 
 function main() {
