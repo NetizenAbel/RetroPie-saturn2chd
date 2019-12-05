@@ -61,6 +61,12 @@ function dialogInfo {
     dialog --infobox "$@" 8 50 > /dev/tty
 } 2>&1
 
+# dialogProgress example of usage:
+# dialogProgress "Please wait. Compressing $PSX_ROM..."
+function dialogInfo {
+    dialog --backtitle "$FILE_IN" --gauge 8 50 "$@" > /dev/tty
+} 2>&1
+
 # end of dialog functions ###################################################
 
 
@@ -141,7 +147,7 @@ function compressRoms() {
 #         dialogInfo "Found \"${FILE_IN%.*}\"\n\n Complete."
          cleanUp
     done
-) | dialog --progressbox "Compressing ${FILE_IN%.*}" 10 80
+) | dialog --progressbox "Compressing ${FILE_IN%.*}" 10 80 >/dev/tty
 }
 
 function main() {
