@@ -141,7 +141,7 @@ function compressRoms() {
 #         dialogInfo "Found \"${FILE_IN%.*}\"\n\n Complete."
          cleanUp
     done
-) | dialog --gauge "Compressing ${FILE_IN%.*}" 10 80
+) | dialog --progressbox "Compressing ${FILE_IN%.*}" 10 80
 }
 
 function main() {
