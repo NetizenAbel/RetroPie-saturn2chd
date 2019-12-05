@@ -94,10 +94,6 @@ function checkDeps() {
 	fi
 }
 
-function cleanUp() {
-    rm -f "$CHD_SCRIPT"
-}
-
 function fixNames() {
     cd "${ROMS_DIR}" || exit
     for OLD_NAME in *[0-9]\).chd
@@ -137,24 +133,17 @@ function compressRoms() {
         FILE_OUT="${FILE_IN%.*}.chd"
          cd "$ROMS_DIR" || exit
          echo chdman createcd -i \""$FILE_IN"\" -o \""$FILE_OUT"\" > "$CHD_SCRIPT"
-	 (sh $CHD_SCRIPT) | dialog --programbox "Compressing $FILE_IN" 20 80
-		 sed 's/.'[0-9]'% complete... (ratio='[0-9][0-9]'.'[0-9]'%)//'
-	 #| dialog --progressbox "Compressing ${FILE_IN%.*}" 10 80
-		#| grep \\% \# | sed 's/Compressing, //' \
-		# 2>&1 | dialog --gauge "Compressing \"${FILE_IN%.*}\"" 20 70\
-#         dialogInfo "Found \"${FILE_IN%.*}\"\n\n $(sh "$CHD_SCRIPT" | grep \\%)"
-#         dialogInfo "Found \"${FILE_IN%.*}\"\n\n Complete."
-         cleanUp
+	 (sh $CHD_SCRIPT) 2>&1| dialog --progressbox "${FILE_IN%.*}" 5 80
+	 rm -f "$CHD_SCRIPT"
     done
 }
 
 function main() {
-    cleanUp
     checkDeps
     compressRoms
-    fixNames
-    cleanBins
-    buildM3us
+    #fixNames
+    #cleanBins
+    #buildM3us
 }
 
 main
