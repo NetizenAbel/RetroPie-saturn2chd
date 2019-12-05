@@ -139,7 +139,11 @@ function compressRoms() {
 }
 
 function main() {
-    checkDeps || compressRoms || fixNames || buildM3us || cleanBins
+    checkDeps || exit
+    compressRoms || exit
+    fixNames || exit
+    buildM3us || exit
+    cleanBins || exit
 }
 
 main
