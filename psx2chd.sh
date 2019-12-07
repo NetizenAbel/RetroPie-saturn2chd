@@ -23,7 +23,7 @@ home="$(eval echo ~"$user")"
 # Variables
 readonly RP_DIR="$home/RetroPie"
 readonly SCRIPT_DESCRIPTION="A tool for compressing PSX games into CHD format."
-readonly ROMS_DIR="$RP_DIR/roms/psx"
+readonly ROMS_DIR="$RP_DIR/psx"
 readonly CHD_SCRIPT=$ROMS_DIR/chdscript.sh
 
 # Dialogs
@@ -61,12 +61,6 @@ function dialogInfo {
     dialog --infobox "$@" 8 50 > /dev/tty
 } 2>&1
 
-# dialogProgress example of usage:
-# dialogProgress "Please wait. Compressing $PSX_ROM..."
-function dialogProgress {
-    dialog --programbox 8 50 "$@" > /dev/tty
-} 2>&1
-
 # end of dialog functions ###################################################
 
 
@@ -81,46 +75,38 @@ function checkDeps() {
 	echo "Checking for dependencies..."
 	if [[ "$OSTYPE" == "darwin"* ]]
 	then
-		brew install --verbose dialog mame-tools
-		if [[ $(brew list | grep mame-tools) == "mame-tools" ]]
+		if [[ "$(which chdman)" != "" ]]
 		then
 			dialogInfo "Mame-Tools installed, continuing"
 		else
 			echo "Something is wrong with mame-tools."
-			exit 1
+			brew install dialog chdman || exit
 		fi
 	else
 		sudo apt-get install -y dialog mame-tools
 	fi
 }
 
-function fixNames() {
-    cd "${ROMS_DIR}" || exit
-    for OLD_NAME in *[0-9]\).chd
-    do
-        dialogInfo "Fixing filenames for multi-disc games,\nPlease wait..."
-        NEW_NAME="${OLD_NAME/\ \(Disc\ /.CD}"
-        NEW_NAME="${NEW_NAME/\).chd/}"
-        mv "$OLD_NAME" "${NEW_NAME}"
-	rm -f "${NEW_NAME/.CD[0-9]/m3u}"
-    done
-}
-
-function cleanBins() {
-    cd "${ROMS_DIR}" || exit
-    for OLD_BIN in *[0-9]\).bin
-    do
-	dialogInfo "Renaming bins for a test."
-	mv "$OLD_BIN" "${OLD_BIN}.bak"
-    done
-}
-
 function buildM3us() {
+    dialogInfo "Writing M3U files for converted multi-disc games."
     cd "${ROMS_DIR}" || exit
-    for DISC in *.CD[0-9]
+
+    for DISC in *Disc\ [0-9]* 
     do
-	dialogInfo "Removing BIN files for converted multi-disc games."
-	echo "${DISC}" >> "${DISC/CD[0-9]/m3u}"
+	FIXED=${DISC/\ \(Disc\ [0-9]\)/}
+	dialogInfo "Renaming $DISC to ${FIXED}"
+	mv "$DISC" "${FIXED}"
+    done
+
+    dialogInfo "Writing M3U files for converted multi-disc games."
+    for M3U in *.m3u
+    do
+	    rm -f "$M3U"
+    done
+
+    for DISC in *CD[0-9]
+    do
+	    echo "$DISC" >> "${DISC/CD[0-9]/m3u}"
     done
 }
 
@@ -132,8 +118,8 @@ function compressRoms() {
         FILE_IN=$(basename -- "$ROM" | grep .cue)
         FILE_OUT="${FILE_IN%.*}.chd"
          cd "$ROMS_DIR" || exit
-         echo chdman createcd -i \""$FILE_IN"\" -o \""$FILE_OUT"\" > "$CHD_SCRIPT"
-	 (sh "$CHD_SCRIPT") 2>&1| dialog --progressbox "${FILE_IN%.*}" 5 80
+         echo chdman createcd -np 4 -i \""$FILE_IN"\" -o \""$FILE_OUT"\" > "$CHD_SCRIPT"
+	 (sh "$CHD_SCRIPT") 2>&1| dialog --progressbox "${FILE_IN%.*}" 5 80 || exit
 	 rm -f "$CHD_SCRIPT"
     done
 }
@@ -141,9 +127,7 @@ function compressRoms() {
 function main() {
     checkDeps || exit
     compressRoms || exit
-    fixNames || exit
     buildM3us || exit
-    cleanBins || exit
 }
 
 main
