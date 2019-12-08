@@ -21,8 +21,7 @@ user="$SUDO_USER"
 home="$(eval echo ~"$user")"
 
 # Variables
-#readonly RP_DIR="$home/RetroPie"
-readonly RP_DIR="/Users/kashaiahyah85/Downloads/Motion.Blue.Unified.Rom.Sets-PiPiggies/psx_unified_rompack_media_only/psx_unified_rompack/"
+readonly RP_DIR="$home/RetroPie"
 readonly SCRIPT_DESCRIPTION="A tool for compressing PSX games into CHD format."
 readonly ROMS_DIR="$RP_DIR/psx"
 readonly CHD_SCRIPT=$ROMS_DIR/chdscript.sh
