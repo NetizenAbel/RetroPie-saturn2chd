@@ -1,27 +1,27 @@
-# RetroPie PSX2CHD
+# RetroPie Saturn2CHD
 
-A tool to compress PSX games into CHD format.
+A tool to compress Saturn games into CHD format.
 
 ## Installation
 
 ```
 cd /home/pi/
-git clone https://github.com/kashaiahyah85/RetroPie-psx2chd
-cd RetroPie-psx2chd
-sudo chmod +x psx2chd.sh
+git clone https://github.com/kashaiahyah85/RetroPie-saturn2chd
+cd RetroPie-saturn2chd
+sudo chmod +x saturn2chd.sh
 ```
 
 ## Updating
 
 ```
-cd /home/pi/RetroPie-psx2chd/
+cd /home/pi/RetroPie-saturn2chd/
 git pull
 ```
 
 ## Usage
 
 ```
-./psx2chd.sh
+./saturn2chd.sh
 ```
 
 ## Changelog
