@@ -75,7 +75,7 @@ function checkDeps() {
 	echo "Checking for dependencies..."
 	if [[ "$OSTYPE" == "darwin"* ]]
 	then
-		if [[ "$(which chdman)" != "" ]]
+		if [[ "$(command -v chdman)" != "" ]]
 		then
 			dialogInfo "Mame-Tools installed, continuing"
 		else
